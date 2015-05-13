@@ -213,14 +213,14 @@
             <div class="col-sm-6 col-sm-offset-1">
                 <h3>You can mail us</h3>
                 <p>If you have any clarification please feel free to contact us using the below form.</p>
-                <form>
+                <form id="contact_form">
                     <label class="h6">Name</label>
-                    <input type="text" class="form-control">
+                    <input id="name" name="name" type="text" placeholder="Enter your full name here" class="form-control input-md" required="" class="form-control">
                     <label class="h6">E-mail</label>
-                    <input type="text" class="form-control">
+                    <input id="email" name="email" type="text" placeholder="Enter your email address here" required="" class="form-control">
                     <label class="h6">Message</label>
-                    <textarea rows="7" class="form-control"></textarea>
-                    <button type="submit" class="btn btn-primary"><span class="fui-mail"></span></button>
+                    <textarea id="msg" name="msg" rows="7" class="form-control" equired="" ></textarea>
+                    <button type="submit" id="submit" name="submit" class="btn btn-primary"><span class="fui-mail"></span></button>
                 </form>
             </div>
         </div>
@@ -257,6 +257,49 @@
             <script src="startup/common-files/js/froogaloop.min.js"></script>
             <script src="startup/common-files/js/startup-kit.js"></script>
         </div>
-	<script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+	<script>
+	jQuery(function($)  
+	{
+	    $("#contact_form").submit(function()
+	    {
+	        var email = $("#email").val(); // get email field value
+	        var name = $("#name").val(); // get name field value
+	        var msg = $("#msg").val(); // get message field value
+	        $.ajax(
+	        {
+	            type: "POST",
+	            url: "https://mandrillapp.com/api/1.0/messages/send.json",
+	            data: {
+	                'key': 'X2GMLzOKdOH4wckgu6gInA',
+	                'message': {
+	                    'from_email': email,
+	                    'from_name': name,
+	                    'headers': {
+	                        'Reply-To': email
+	                    },
+	                    'subject': 'Website Contact Form Submission',
+	                    'text': msg,
+	                    'to': [
+	                    {
+	                        'email': 'beenacherukuth@gmail.com',
+	                        'name': 'Dr.C.Beena',
+	                        'type': 'to'
+	                    }]
+	                }
+	            }
+	        })
+	        .done(function(response) {
+	            alert('Your message has been sent. Thank you!'); // show success message
+	            $("#name").val(''); // reset field after successful submission
+	            $("#email").val(''); // reset field after successful submission
+	            $("#msg").val(''); // reset field after successful submission
+	        })
+	        .fail(function(response) {
+	            alert('Error sending message.');
+	        });
+	        return false; // prevent page refresh
+	    });
+	});
+	</script>
     </body>
 </html>
